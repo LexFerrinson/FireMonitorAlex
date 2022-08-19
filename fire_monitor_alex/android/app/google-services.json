@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "550618001645",
+    "project_id": "firemonitoralex",
+    "storage_bucket": "firemonitoralex.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550618001645:android:218d693307426631845ce4",
+        "android_client_info": {
+          "package_name": "com.example.fire_monitor_alex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550618001645-bm8qv1bfpnai095ekp62goihfvqbfvb2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC23JpDleznwziC2ReyuTjxp0qV5Zh4l0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550618001645-bm8qv1bfpnai095ekp62goihfvqbfvb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
