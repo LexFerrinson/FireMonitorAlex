@@ -90,7 +90,7 @@ class _LogInViewState extends State<LogInView> {
                   ),
                   AuthButton(
                     onTap: () =>
-                        signIn('alex@gmail.com', 'Alex1234', context, () {
+                        signIn('mire@gmail.com', 'Mire1234', context, () {
                       if (!mounted) return;
                       Navigator.pushReplacement(
                           context,

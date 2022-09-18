@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fire_monitor_alex/model/remote_node.dart';
 
 class UserNet {
@@ -6,8 +8,9 @@ class UserNet {
 
   UserNet(this.nodes, this.counter_nodes);
 
-  UserNet.fromJson(Map<String, dynamic> json)
-      : nodes = json['nodes'],
+  UserNet.fromJson(dynamic json)
+      : nodes = List<RemoteNode>.from(
+            json['nodes'].map((x) => RemoteNode.fromJson(x as dynamic))),
         counter_nodes = json['counter_nodes'];
 
   Map<String, dynamic> toJson() => {

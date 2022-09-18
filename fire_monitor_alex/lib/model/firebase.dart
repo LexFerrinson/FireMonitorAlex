@@ -1,6 +1,9 @@
+import 'package:fire_monitor_alex/model/user_net.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'remote_node.dart';
+import 'dart:convert';
 
 const int EMPTY = -1;
 const String COUNTER_NDOES = "counter_nodes";
@@ -13,7 +16,12 @@ Future FirebaseSignIn(String email, String password) async {
 }
 
 Future FirebaseAddNode(RemoteNode node) async {
-  final database = FirebaseDatabase.instance.ref();
+  final FirebaseApp myApp = Firebase.app();
+  final database = FirebaseDatabase.instanceFor(
+          app: myApp,
+          databaseURL:
+              "https://firemonitoralex-default-rtdb.europe-west1.firebasedatabase.app")
+      .ref();
   //String cleanEmail = CleanEmail(email);
   String? uid = FirebaseGetUid();
   if (uid != null) {
@@ -21,7 +29,7 @@ Future FirebaseAddNode(RemoteNode node) async {
     if (id != EMPTY) {
       //The first time a user adds a new node, it has to be
       //defined a new counter for node id
-      DatabaseReference ref = database.child('$uid/$id');
+      DatabaseReference ref = database.child('$uid/nodes/$id');
       await ref.set(node.toJson());
       ref = database.child('$uid/$COUNTER_NDOES');
       await ref.set(++id);
@@ -59,4 +67,34 @@ String CleanEmail(String email) {
   String e4 = e3.split('[').join(',');
   String e5 = e4.split(']').join(',');
   return e5;
+}
+
+Future<UserNet?> FirebaseGetNetwork() async {
+  final FirebaseApp myApp = Firebase.app();
+  final database = FirebaseDatabase.instanceFor(
+          app: myApp,
+          databaseURL:
+              "https://firemonitoralex-default-rtdb.europe-west1.firebasedatabase.app")
+      .ref();
+
+  String? uid = FirebaseGetUid();
+  if (uid != null) {
+    final DataSnapshot snapshot = await database.child(uid).get();
+    UserNet v1 = UserNet.fromJson(snapshot.value as dynamic);
+    //var vl = Map<String, dynamic>.from(snapshot.value as dynamic);
+
+    /*var rn = List<Map<String, dynamic>>.from(jsonNod as dynamic);
+    List<RemoteNode> myL = [];
+    for (var v in rn) {
+      myL.add(RemoteNode.fromJson(v));
+    }*/
+    /*List<RemoteNode> myL = List;
+    for (Object? myO in vl['nodes']) {
+      myL.add(myO as RemoteNode);
+    }*/
+
+    //UserNet usnet = UserNet.fromJson(vl);
+    int i = 2;
+  }
+  return null;
 }

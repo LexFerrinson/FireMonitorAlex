@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "550618001645",
+    "firebase_url": "https://firemonitoralex-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "firemonitoralex",
     "storage_bucket": "firemonitoralex.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:550618001645:android:218d693307426631845ce4",
+        "mobilesdk_app_id": "1:550618001645:android:c9cc9e42e757f3eb845ce4",
         "android_client_info": {
           "package_name": "com.example.fire_monitor_alex"
         }
