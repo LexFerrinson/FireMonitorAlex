@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:fire_monitor_alex/model/remote_node.dart';
+import 'package:fire_monitor_alex/model/user_net.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
@@ -26,9 +27,19 @@ class _MapViewState extends State<MapView> {
   late BitmapDescriptor fireBitmap;
   late BitmapDescriptor questionBitmap;
 
+  void myCustomListener(UserNet net) {
+    print('My listener says: $net');
+    for (RemoteNode rn in net.nodes) {
+      //Show the initial markers in the map
+      showMarker(rn);
+    }
+    setState(() {});
+  }
+
   @override
   void initState() {
     loadMarkers();
+    subscribeToBBDDchange(myCustomListener);
     super.initState();
   }
 
@@ -58,6 +69,8 @@ class _MapViewState extends State<MapView> {
     LatLng nodeLocation =
         LatLng(double.parse(rn.latitude), double.parse(rn.longitude));
     String name = rn.name;
+    String h = rn.humidity;
+    String t = rn.temperature;
     markers.add(Marker(
         //add marker on google map
         markerId: MarkerId(name),
@@ -65,7 +78,7 @@ class _MapViewState extends State<MapView> {
         infoWindow: InfoWindow(
           //popup info
           title: name,
-          snippet: name,
+          snippet: ' ',
         ),
         icon: getCorrectMarker(rn), //Icon for Marker
         onTap: () {

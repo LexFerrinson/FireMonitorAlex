@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:fire_monitor_alex/model/user_net.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/utils/stream_subscriber_mixin.dart';
+import 'package:flutter/cupertino.dart';
 import 'remote_node.dart';
 import 'dart:convert';
+
+typedef CustomCallback = void Function(UserNet);
 
 const int EMPTY = -1;
 const String COUNTER_NDOES = "counter_nodes";
@@ -89,4 +95,21 @@ Future<UserNet?> FirebaseGetNetwork() async {
     }
   }
   return null;
+}
+
+void FirebaseListenBBDDchange(CustomCallback onSuccess) {
+  final FirebaseApp myApp = Firebase.app();
+  final database = FirebaseDatabase.instanceFor(
+          app: myApp,
+          databaseURL:
+              "https://firemonitoralex-default-rtdb.europe-west1.firebasedatabase.app")
+      .ref();
+  String? uid = FirebaseGetUid();
+  if (uid != null) {
+    database.child(uid).onValue.listen((event) {
+      DataSnapshot snapshot = event.snapshot;
+      var vl = Map<String, dynamic>.from(snapshot.value as dynamic);
+      onSuccess(UserNet.fromJson(vl));
+    });
+  }
 }
