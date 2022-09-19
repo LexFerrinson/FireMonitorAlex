@@ -77,8 +77,8 @@ class _PageFirstState extends State<PageFirst> {
               onPressed: () {
                 try {
                   RemoteNode node = RemoteNode(
-                      double.parse(longitudController.text),
-                      double.parse(latitudeController.text),
+                      longitudController.text,
+                      latitudeController.text,
                       nameController.text,
                       'No data',
                       'No data');

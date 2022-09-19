@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:fire_monitor_alex/model/remote_node.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:fire_monitor_alex/viewmodel/main_view_model.dart';
+import 'dart:developer';
 
 class MapView extends StatefulWidget {
   MapView({Key? key}) : super(key: key);
@@ -15,19 +17,60 @@ class MapView extends StatefulWidget {
 class _MapViewState extends State<MapView> {
   final int ICON_SIZE = 150;
   GoogleMapController? mapController; //contrller for Google map
-  Set<Marker> markers = Set(); //markers for google map
+  Set<Marker> markers = {}; //markers for google map
   LatLng showLocation = const LatLng(41.3874, 2.1686);
   LatLng auxLocation = const LatLng(41, 1.8);
   //location to show in map
   late BitmapDescriptor greenBitmap;
   late BitmapDescriptor warningBitmap;
   late BitmapDescriptor fireBitmap;
+  late BitmapDescriptor questionBitmap;
 
   @override
   void initState() {
     loadMarkers();
-    addMarkers(); //gets and adds the markers from the cloud
     super.initState();
+  }
+
+  BitmapDescriptor getCorrectMarker(RemoteNode rn) {
+    if (rn.humidity == 'No data' || rn.temperature == 'No data') {
+      return questionBitmap;
+    } else {
+      try {
+        double h = double.parse(rn.humidity);
+        double t = double.parse(rn.temperature);
+
+        if (t < 50) {
+          return greenBitmap;
+        } else if (t >= 50 && h >= 50) {
+          return warningBitmap;
+        } else if (t >= 50 && h < 50) {
+          return fireBitmap;
+        }
+      } on Exception catch (_) {
+        return questionBitmap;
+      }
+    }
+    return questionBitmap;
+  }
+
+  void showMarker(RemoteNode rn) {
+    LatLng nodeLocation =
+        LatLng(double.parse(rn.latitude), double.parse(rn.longitude));
+    String name = rn.name;
+    markers.add(Marker(
+        //add marker on google map
+        markerId: MarkerId(name),
+        position: nodeLocation, //position of marker
+        infoWindow: InfoWindow(
+          //popup info
+          title: name,
+          snippet: name,
+        ),
+        icon: getCorrectMarker(rn), //Icon for Marker
+        onTap: () {
+          print('Marker clickeeed fire');
+        }));
   }
 
   Future<Uint8List?> getBytesFromAsset(String path, int width) async {
@@ -50,6 +93,9 @@ class _MapViewState extends State<MapView> {
     final Uint8List? warningIcon =
         await getBytesFromAsset('assets/images/warning.png', ICON_SIZE);
 
+    final Uint8List? questionIcon =
+        await getBytesFromAsset('assets/images/question.png', ICON_SIZE);
+
     if (greenIcon != null) {
       greenBitmap = BitmapDescriptor.fromBytes(greenIcon);
     }
@@ -62,63 +108,26 @@ class _MapViewState extends State<MapView> {
       fireBitmap = BitmapDescriptor.fromBytes(fireIcon);
     }
 
-    var result = await readNetwork();
-    print(result.runtimeType);
+    if (questionIcon != null) {
+      questionBitmap = BitmapDescriptor.fromBytes(questionIcon);
+    }
+
+    var usernet = await readNetwork();
+    if (usernet != null &&
+        greenIcon != null &&
+        warningIcon != null &&
+        fireIcon != null) {
+      //Go through all the nodes list of the user
+      for (RemoteNode rn in usernet.nodes) {
+        //Show the initial markers in the map
+        showMarker(rn);
+      }
+    } else {
+      debugPrint('Error retrieving the user net from cloud or loading icons');
+    }
 
     setState(() {});
-
-    /*if (greenIcon != null) {
-      markers.add(Marker(
-          //add marker on google map
-          markerId: MarkerId(showLocation.toString()),
-          position: showLocation, //position of marker
-          infoWindow: const InfoWindow(
-            //popup info
-            title: 'Custom marker alex ',
-            snippet: 'My Custom Subtitle',
-          ),
-          icon: BitmapDescriptor.fromBytes(greenIcon), //Icon for Marker
-          onTap: () {
-            print('Marker clickeeed fire');
-          }));
-    }
-
-    if (warningIcon != null) {
-      markers.add(Marker(
-          //add marker on google map
-          markerId: MarkerId(showLocation.toString()),
-          position: showLocation, //position of marker
-          infoWindow: const InfoWindow(
-            //popup info
-            title: 'Custom marker alex ',
-            snippet: 'My Custom Subtitle',
-          ),
-          icon: BitmapDescriptor.fromBytes(warningIcon), //Icon for Marker
-          onTap: () {
-            print('Marker clickeeed fire');
-          }));
-    }
-
-    if (fireIcon != null) {
-      markers.add(Marker(
-          //add marker on google map
-          markerId: MarkerId(showLocation.toString()),
-          position: showLocation, //position of marker
-          infoWindow: const InfoWindow(
-            //popup info
-            title: 'Custom marker alex ',
-            snippet: 'My Custom Subtitle',
-          ),
-          icon: BitmapDescriptor.fromBytes(fireIcon), //Icon for Marker
-          onTap: () {
-            print('Marker clickeeed fire');
-          }));
-    }*/
-
-    //setState(() {});
   }
-
-  void addMarkers() async {}
 
   @override
   Widget build(BuildContext context) {

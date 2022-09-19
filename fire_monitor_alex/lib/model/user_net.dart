@@ -8,10 +8,15 @@ class UserNet {
 
   UserNet(this.nodes, this.counter_nodes);
 
-  UserNet.fromJson(dynamic json)
+  UserNet.fromJson(Map<String, dynamic> json)
+      : nodes = List<RemoteNode>.from(json['nodes'].map((x) =>
+            RemoteNode.fromJson(Map<String, dynamic>.from(x as dynamic)))),
+        counter_nodes = json['counter_nodes'];
+
+  /*UserNet.fromJson(dynamic json)
       : nodes = List<RemoteNode>.from(
             json['nodes'].map((x) => RemoteNode.fromJson(x as dynamic))),
-        counter_nodes = json['counter_nodes'];
+        counter_nodes = json['counter_nodes'];*/
 
   Map<String, dynamic> toJson() => {
         'nodes': nodes,

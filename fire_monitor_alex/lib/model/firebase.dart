@@ -79,22 +79,14 @@ Future<UserNet?> FirebaseGetNetwork() async {
 
   String? uid = FirebaseGetUid();
   if (uid != null) {
-    final DataSnapshot snapshot = await database.child(uid).get();
-    UserNet v1 = UserNet.fromJson(snapshot.value as dynamic);
-    //var vl = Map<String, dynamic>.from(snapshot.value as dynamic);
-
-    /*var rn = List<Map<String, dynamic>>.from(jsonNod as dynamic);
-    List<RemoteNode> myL = [];
-    for (var v in rn) {
-      myL.add(RemoteNode.fromJson(v));
-    }*/
-    /*List<RemoteNode> myL = List;
-    for (Object? myO in vl['nodes']) {
-      myL.add(myO as RemoteNode);
-    }*/
-
-    //UserNet usnet = UserNet.fromJson(vl);
-    int i = 2;
+    try {
+      final DataSnapshot snapshot = await database.child(uid).get();
+      //UserNet v1 = UserNet.fromJson(snapshot.value as dynamic);
+      var vl = Map<String, dynamic>.from(snapshot.value as dynamic);
+      return UserNet.fromJson(vl);
+    } on Exception catch (_) {
+      return null;
+    }
   }
   return null;
 }
