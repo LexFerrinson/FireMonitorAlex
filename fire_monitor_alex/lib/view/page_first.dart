@@ -20,16 +20,24 @@ class _PageFirstState extends State<PageFirst> {
   bool enterNewNode = false;
   String topData = 'Please select a node';
   Color floatingInfoColor = const Color.fromARGB(251, 37, 37, 37);
+  bool showFloatInfo = false;
 
   void updateFloatingInfo(String h, String t, Color c) {
+    showFloatInfo = true;
     setState(() {
       topData = 'RH: $h (%), T: $t (deg)';
       floatingInfoColor = c;
     });
   }
 
+  void hideFloatingInfo() {
+    showFloatInfo = false;
+    setState(() {});
+  }
+
   @override
   void initState() {
+    showFloatInfo = false;
     // TODO: implement initState
     super.initState();
   }
@@ -128,7 +136,10 @@ class _PageFirstState extends State<PageFirst> {
         body: Stack(
           alignment: AlignmentDirectional.topCenter,
           children: [
-            MapView(floatingInfo: updateFloatingInfo),
+            MapView(
+              floatingInfo: updateFloatingInfo,
+              hideFloatingInfo: hideFloatingInfo,
+            ),
             Column(
               children: [
                 const SizedBox(
@@ -137,18 +148,27 @@ class _PageFirstState extends State<PageFirst> {
                 Container(
                   alignment: Alignment.center,
                   height: 50,
-                  width: width * 0.9,
-                  decoration: BoxDecoration(
-                    color: floatingInfoColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Text(
-                    topData,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Color.fromARGB(225, 230, 230, 230),
-                    ),
-                  ),
+                  width: width,
+                  color: Colors.transparent,
+                  child: showFloatInfo
+                      ? Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          width: width * 0.9,
+                          decoration: BoxDecoration(
+                            color: floatingInfoColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Text(
+                            topData,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(225, 230, 230, 230),
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
               ],
             ),

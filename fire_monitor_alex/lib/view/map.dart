@@ -9,12 +9,15 @@ import 'package:fire_monitor_alex/viewmodel/main_view_model.dart';
 import 'dart:developer';
 
 typedef FloatingInfoCallback = void Function(String, String, Color);
+typedef HideFloatingCallback = void Function();
 
 class MapView extends StatefulWidget {
-  const MapView({Key? key, required this.floatingInfo}) : super(key: key);
+  const MapView(
+      {Key? key, required this.floatingInfo, required this.hideFloatingInfo})
+      : super(key: key);
 
   final FloatingInfoCallback floatingInfo;
-
+  final HideFloatingCallback hideFloatingInfo;
   @override
   State<MapView> createState() => _MapViewState();
 }
@@ -219,6 +222,9 @@ class _MapViewState extends State<MapView> {
           setState(() {
             mapController = controller;
           });
+        },
+        onTap: (coord) {
+          widget.hideFloatingInfo();
         },
       ),
     );
