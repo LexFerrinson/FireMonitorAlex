@@ -30,14 +30,27 @@ class _MapViewState extends State<MapView> {
   late BitmapDescriptor warningBitmap;
   late BitmapDescriptor fireBitmap;
   late BitmapDescriptor questionBitmap;
+  String selId = "";
 
   void createShit(FloatingInfoCallback onSuccess) {}
 
   void myCustomListener(UserNet net) {
     print('My listener says: $net');
+    markers = {};
+    String? h;
+    String? t;
+    Color? c;
     for (RemoteNode rn in net.nodes) {
       //Show the initial markers in the map
       showMarker(rn);
+      if (rn.name == selId) {
+        h = rn.humidity;
+        t = rn.temperature;
+        c = getCorrectColor(rn);
+      }
+    }
+    if (h != null && t != null && c != null) {
+      widget.floatingInfo(h, t, c);
     }
     setState(() {});
   }
@@ -110,6 +123,7 @@ class _MapViewState extends State<MapView> {
         ),
         icon: getCorrectMarker(rn), //Icon for Marker
         onTap: () {
+          selId = name;
           Color c = getCorrectColor(rn);
           widget.floatingInfo(h, t, c);
         }));
