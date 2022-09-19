@@ -18,6 +18,21 @@ class PageFirst extends StatefulWidget {
 
 class _PageFirstState extends State<PageFirst> {
   bool enterNewNode = false;
+  String topData = 'Please select a node';
+  Color floatingInfoColor = const Color.fromARGB(251, 37, 37, 37);
+
+  void updateFloatingInfo(String h, String t, Color c) {
+    setState(() {
+      topData = 'RH: $h (%), T: $t (deg)';
+      floatingInfoColor = c;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   void showToastNotification(String msg) {
     Fluttertoast.showToast(
@@ -108,8 +123,37 @@ class _PageFirstState extends State<PageFirst> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        body: enterNewNode ? NewNodeView() : MapView(),
+        body: Stack(
+          alignment: AlignmentDirectional.topCenter,
+          children: [
+            MapView(floatingInfo: updateFloatingInfo),
+            Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  width: width * 0.9,
+                  decoration: BoxDecoration(
+                    color: floatingInfoColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Text(
+                    topData,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Color.fromARGB(225, 230, 230, 230),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 65),
           child: FloatingActionButton(

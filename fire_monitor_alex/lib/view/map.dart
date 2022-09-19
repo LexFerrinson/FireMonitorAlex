@@ -8,8 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:fire_monitor_alex/viewmodel/main_view_model.dart';
 import 'dart:developer';
 
+typedef FloatingInfoCallback = void Function(String, String, Color);
+
 class MapView extends StatefulWidget {
-  MapView({Key? key}) : super(key: key);
+  const MapView({Key? key, required this.floatingInfo}) : super(key: key);
+
+  final FloatingInfoCallback floatingInfo;
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -26,6 +30,8 @@ class _MapViewState extends State<MapView> {
   late BitmapDescriptor warningBitmap;
   late BitmapDescriptor fireBitmap;
   late BitmapDescriptor questionBitmap;
+
+  void createShit(FloatingInfoCallback onSuccess) {}
 
   void myCustomListener(UserNet net) {
     print('My listener says: $net');
@@ -65,6 +71,28 @@ class _MapViewState extends State<MapView> {
     return questionBitmap;
   }
 
+  Color getCorrectColor(RemoteNode rn) {
+    if (rn.humidity == 'No data' || rn.temperature == 'No data') {
+      return const Color.fromARGB(251, 37, 37, 37);
+    } else {
+      try {
+        double h = double.parse(rn.humidity);
+        double t = double.parse(rn.temperature);
+
+        if (t < 50) {
+          return const Color.fromARGB(250, 51, 145, 8);
+        } else if (t >= 50 && h >= 50) {
+          return const Color.fromARGB(249, 165, 138, 15);
+        } else if (t >= 50 && h < 50) {
+          return const Color.fromARGB(250, 139, 12, 12);
+        }
+      } on Exception catch (_) {
+        return const Color.fromARGB(251, 37, 37, 37);
+      }
+    }
+    return const Color.fromARGB(251, 37, 37, 37);
+  }
+
   void showMarker(RemoteNode rn) {
     LatLng nodeLocation =
         LatLng(double.parse(rn.latitude), double.parse(rn.longitude));
@@ -82,7 +110,8 @@ class _MapViewState extends State<MapView> {
         ),
         icon: getCorrectMarker(rn), //Icon for Marker
         onTap: () {
-          print('Marker clickeeed fire');
+          Color c = getCorrectColor(rn);
+          widget.floatingInfo(h, t, c);
         }));
   }
 
