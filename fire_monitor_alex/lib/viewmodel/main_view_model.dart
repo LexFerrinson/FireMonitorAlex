@@ -48,3 +48,7 @@ void subscribeToBBDDchange(CustomCallback onSuccess) {
 Stream<DatabaseEvent>? getNodesStream() {
   return FirebaseRealTimeUserNet();
 }
+
+Stream<DatabaseEvent>? getStreamFromSensor(String rnNum, String sensorNum) {
+  return FirebaseGetRealTimeSensor(rnNum, sensorNum);
+}

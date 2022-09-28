@@ -166,3 +166,20 @@ Stream<DatabaseEvent>? FirebaseRealTimeUserNet() {
   }
   return null;
 }
+
+Stream<DatabaseEvent>? FirebaseGetRealTimeSensor(
+    String rnNum, String sensorNum) {
+  final FirebaseApp myApp = Firebase.app();
+  final database = FirebaseDatabase.instanceFor(
+          app: myApp,
+          databaseURL:
+              "https://firemonitoralex-default-rtdb.europe-west1.firebasedatabase.app")
+      .ref();
+  String? uid = FirebaseGetUid();
+  if (uid != null) {
+    return database
+        .child('$uid/nodes/$rnNum/sensors/$sensorNum/data_record')
+        .onValue;
+  }
+  return null;
+}

@@ -24,7 +24,10 @@ class _NodeCBState extends State<NodeCB> {
   @override
   Widget build(BuildContext context) {
     if (widget.nodeItems.isNotEmpty) {
-      dropdownvalue ??= widget.nodeItems[0];
+      if (!widget.nodeItems.contains(dropdownvalue)) {
+        dropdownvalue = null;
+      }
+      dropdownvalue ??= widget.nodeItems.first;
     } else {
       dropdownvalue = null;
     }

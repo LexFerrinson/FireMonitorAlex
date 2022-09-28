@@ -86,7 +86,7 @@ class _PageFirstState extends State<PageFirst> {
                       var vl = Map<String, dynamic>.from(
                           snapshot.data!.snapshot.value as dynamic);
                       UserNet? userNet = UserNet.fromJson(vl);
-                      selectedRN = userNet.nodes.keys.last;
+                      selectedRN = userNet.nodes.keys.first;
                       return NodeCB(
                           startItem: '',
                           nodeItems: userNet.nodes.keys.toList(),
