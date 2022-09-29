@@ -177,9 +177,7 @@ Stream<DatabaseEvent>? FirebaseGetRealTimeSensor(
       .ref();
   String? uid = FirebaseGetUid();
   if (uid != null) {
-    return database
-        .child('$uid/nodes/$rnNum/sensors/$sensorNum/data_record')
-        .onValue;
+    return database.child('$uid/nodes/$rnNum/sensors/$sensorNum').onValue;
   }
   return null;
 }

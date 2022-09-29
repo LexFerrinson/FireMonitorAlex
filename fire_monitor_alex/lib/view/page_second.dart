@@ -69,6 +69,7 @@ class _PageSecondState extends State<PageSecond> {
               }
             },
           ),
+
           //This streambuilder is respoonsible for displaying the sensor data cards
           StreamBuilder<DatabaseEvent>(
             stream: getNodesStream(),
@@ -79,10 +80,25 @@ class _PageSecondState extends State<PageSecond> {
                 var vl = Map<String, dynamic>.from(
                     snapshot.data!.snapshot.value as dynamic);
                 UserNet? userNet = UserNet.fromJson(vl);
-                return Column(
+                List<Widget> cards = createSensorDataCards(userNet);
+                return Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: cards.length,
+                    padding: const EdgeInsets.all(16),
+                    itemBuilder: ((context, index) {
+                      return Card(
+                        margin: const EdgeInsets.all(10),
+                        elevation: 2,
+                        child: cards[index],
+                      );
+                    }),
+                  ),
+                );
+                /*return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: createSensorDataCards(userNet),
-                );
+                );*/
               } else {
                 return Column();
               }
