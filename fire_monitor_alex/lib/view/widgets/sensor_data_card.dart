@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../model/sensor.dart';
 import '../../viewmodel/main_view_model.dart';
+import 't_h_line_chart.dart';
+import '../../model/chart_point.dart';
 
 class SensorCard extends StatefulWidget {
   const SensorCard(
@@ -37,6 +39,17 @@ class _SensorCardState extends State<SensorCard> {
           //List<EnvData> data_record = List<EnvData>.from(
           //    (snapshot.data!.snapshot.value as dynamic).map((x) =>
           //        EnvData.fromJson(Map<String, dynamic>.from(x as dynamic))));
+
+          //It is required to create a list of temperatures and humidities
+          //related to their timestamps to create the line chart.
+          List<ChartPoint> pointsT = List<ChartPoint>.from((s.dataRecord ??= [])
+              .map((e) => ChartPoint(
+                  double.parse(e.temperature), double.parse(e.timestamp))));
+
+          List<ChartPoint> pointsH = List<ChartPoint>.from((s.dataRecord ??= [])
+              .map((e) => ChartPoint(
+                  double.parse(e.humidity), double.parse(e.timestamp))));
+
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -50,6 +63,7 @@ class _SensorCardState extends State<SensorCard> {
                 child: Column(
                   children: [
                     Text(s.name),
+                    LineChartW(pointsT: pointsT, pointsH: pointsH),
                   ],
                 ),
               ),

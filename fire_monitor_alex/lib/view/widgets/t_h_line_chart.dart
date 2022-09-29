@@ -2,9 +2,14 @@ import 'package:fire_monitor_alex/main.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_monitor_alex/view/components/item_chart_text.dart';
+import '../../model/chart_point.dart';
 
 class LineChartW extends StatefulWidget {
-  const LineChartW({Key? key}) : super(key: key);
+  const LineChartW({Key? key, required this.pointsT, required this.pointsH})
+      : super(key: key);
+
+  final List<ChartPoint> pointsT;
+  final List<ChartPoint> pointsH;
 
   @override
   State<LineChartW> createState() => _LineChartState();
@@ -21,6 +26,12 @@ class _LineChartState extends State<LineChartW> {
 
   @override
   Widget build(BuildContext context) {
+    //First, the input points must be converted into input points to be,
+    //displayed in the chart.
+    final List<FlSpot> temperaturePoints = List<FlSpot>.from(
+        widget.pointsT.map((e) => FlSpot(e.coordinate, e.value)));
+    final List<FlSpot> humidityPoints = List<FlSpot>.from(
+        widget.pointsH.map((e) => FlSpot(e.coordinate, e.value)));
     return Stack(
       children: <Widget>[
         AspectRatio(
@@ -36,7 +47,7 @@ class _LineChartState extends State<LineChartW> {
               padding: const EdgeInsets.only(
                   right: 18.0, left: 12.0, top: 24, bottom: 12),
               child: LineChart(
-                data(),
+                data(humidityPoints, temperaturePoints),
               ),
             ),
           ),
@@ -101,13 +112,13 @@ class _LineChartState extends State<LineChartW> {
     String text;
     switch (value.toInt()) {
       case 1:
-        text = '10K';
+        text = '10';
         break;
       case 3:
-        text = '30k';
+        text = '50';
         break;
       case 5:
-        text = '50k';
+        text = '100';
         break;
       default:
         return Container();
@@ -116,7 +127,8 @@ class _LineChartState extends State<LineChartW> {
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
-  LineChartData data() {
+  LineChartData data(
+      List<FlSpot> temperaturePoints, List<FlSpot> humidityPoints) {
     return LineChartData(
       gridData: FlGridData(
         show: false,
@@ -170,15 +182,7 @@ class _LineChartState extends State<LineChartW> {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: temperaturePoints, //The list created from the T input points
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -202,15 +206,7 @@ class _LineChartState extends State<LineChartW> {
           ),
         ),
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 2),
-            FlSpot(2.6, 4),
-            FlSpot(4.9, 6),
-            FlSpot(6.8, 1),
-            FlSpot(8, 1),
-            FlSpot(9.5, 2),
-            FlSpot(11, 7),
-          ],
+          spots: humidityPoints, //The list created from the input H points
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
