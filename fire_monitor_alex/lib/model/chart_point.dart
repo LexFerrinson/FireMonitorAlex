@@ -3,5 +3,5 @@ class ChartPoint {
   double coordinate;
   double value;
 
-  ChartPoint(this.coordinate, this.value);
+  ChartPoint(this.value, this.coordinate);
 }

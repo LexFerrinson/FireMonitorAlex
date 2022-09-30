@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -6,9 +8,13 @@ import 'package:flutter/src/widgets/framework.dart';
 
 class ItemChartText extends StatefulWidget {
   const ItemChartText(
-      {Key? key, required this.text, required this.pressedCallback})
+      {Key? key,
+      required this.enabled,
+      required this.text,
+      required this.pressedCallback})
       : super(key: key);
 
+  final bool enabled;
   final String text;
   final VoidCallback pressedCallback;
 
@@ -20,10 +26,25 @@ class _ItemChartTextState extends State<ItemChartText> {
   bool showAvg = false;
   @override
   Widget build(BuildContext context) {
+    Color? textColor;
+    if (showAvg) {
+      textColor = Colors.white.withOpacity(0.5);
+    } else {
+      if (widget.enabled) {
+        textColor = Colors.white;
+      } else {
+        textColor = Colors.white.withOpacity(0.5);
+      }
+    }
     return SizedBox(
-      width: 60,
-      height: 34,
+      width: 85,
+      height: 30,
       child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: widget.enabled
+              ? const Color.fromARGB(255, 62, 80, 97)
+              : const Color.fromARGB(255, 36, 45, 53),
+        ),
         onPressed: () {
           setState(() {
             widget.pressedCallback();
@@ -32,8 +53,9 @@ class _ItemChartTextState extends State<ItemChartText> {
         child: Text(
           widget.text,
           style: TextStyle(
-              fontSize: 12,
-              color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
+            fontSize: 12,
+            color: textColor,
+          ),
         ),
       ),
     );

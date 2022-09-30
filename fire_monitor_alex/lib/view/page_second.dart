@@ -87,11 +87,7 @@ class _PageSecondState extends State<PageSecond> {
                     itemCount: cards.length,
                     padding: const EdgeInsets.all(16),
                     itemBuilder: ((context, index) {
-                      return Card(
-                        margin: const EdgeInsets.all(10),
-                        elevation: 2,
-                        child: cards[index],
-                      );
+                      return cards[index];
                     }),
                   ),
                 );
@@ -103,6 +99,9 @@ class _PageSecondState extends State<PageSecond> {
                 return Column();
               }
             },
+          ),
+          const SizedBox(
+            height: 60,
           ),
         ],
       ),

@@ -21,6 +21,8 @@ class SensorCard extends StatefulWidget {
 class _SensorCardState extends State<SensorCard> {
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     //Every sensor has its own streambuilder to receive new data as it comes and
     //display it on the line chart.
     return StreamBuilder<DatabaseEvent>(
@@ -55,14 +57,20 @@ class _SensorCardState extends State<SensorCard> {
             children: [
               Container(
                 decoration: const BoxDecoration(
-                  color: Colors.amber,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                height: 300,
-                width: 300,
+                height: 310,
+                width: width,
                 child: Column(
                   children: [
-                    Text(s.name),
+                    Text(
+                      s.name,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     LineChartW(pointsT: pointsT, pointsH: pointsH),
                   ],
                 ),

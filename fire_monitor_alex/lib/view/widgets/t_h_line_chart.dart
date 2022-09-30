@@ -35,39 +35,67 @@ class _LineChartState extends State<LineChartW> {
     return Stack(
       children: <Widget>[
         AspectRatio(
-          aspectRatio: 1.70,
+          aspectRatio: 1.40,
           child: Container(
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(
-                  Radius.circular(18),
+                  Radius.circular(13),
                 ),
                 color: Color(0xff232d37)),
             //color: Colors.white),
             child: Padding(
               padding: const EdgeInsets.only(
-                  right: 18.0, left: 12.0, top: 24, bottom: 12),
+                  right: 18.0, left: 12.0, top: 50, bottom: 12),
               child: LineChart(
                 data(humidityPoints, temperaturePoints),
               ),
             ),
           ),
         ),
-        Row(
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ItemChartText(
-                text: 'Humidity',
-                pressedCallback: () => {
-                      setState(() {
-                        showH = !showH;
-                      }),
-                    }),
-            ItemChartText(
-                text: 'Temperature',
-                pressedCallback: () => {
-                      setState(() {
-                        showT = !showT;
-                      }),
-                    }),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'T(ºC)',
+                  style: TextStyle(color: Color(0xff67727d)),
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                ItemChartText(
+                    enabled: showH,
+                    text: 'Humidity',
+                    pressedCallback: () => {
+                          setState(() {
+                            showH = !showH;
+                          }),
+                        }),
+                const SizedBox(
+                  width: 10,
+                ),
+                ItemChartText(
+                    enabled: showT,
+                    text: 'Temperature',
+                    pressedCallback: () => {
+                          setState(() {
+                            showT = !showT;
+                          }),
+                        }),
+                const SizedBox(
+                  width: 30,
+                ),
+                const Text(
+                  'H(%)',
+                  style: TextStyle(color: Color(0xff67727d)),
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -82,14 +110,20 @@ class _LineChartState extends State<LineChartW> {
     );
     Widget text;
     switch (value.toInt()) {
-      case 2:
+      case 0:
+        text = const Text('00:00', style: style);
+        break;
+      case 1:
         text = const Text('6am', style: style);
         break;
-      case 5:
-        text = const Text('12am', style: style);
+      case 6:
+        text = const Text('12:00', style: style);
         break;
-      case 8:
+      case 3:
         text = const Text('6pm', style: style);
+        break;
+      case 12:
+        text = const Text('24:00', style: style);
         break;
       default:
         text = const Text('12pm', style: style);
@@ -111,14 +145,41 @@ class _LineChartState extends State<LineChartW> {
     );
     String text;
     switch (value.toInt()) {
-      case 1:
-        text = '10';
+      case 0:
+        text = '  0';
         break;
-      case 3:
-        text = '50';
+      case 50:
+        text = ' 50';
         break;
-      case 5:
+      case 100:
         text = '100';
+        break;
+      case 150:
+        text = '150';
+        break;
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.left);
+  }
+
+  Widget rightTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Color(0xff67727d),
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '   0';
+        break;
+      case 75:
+        text = '  50';
+        break;
+      case 150:
+        text = ' 100';
         break;
       default:
         return Container();
@@ -131,10 +192,10 @@ class _LineChartState extends State<LineChartW> {
       List<FlSpot> temperaturePoints, List<FlSpot> humidityPoints) {
     return LineChartData(
       gridData: FlGridData(
-        show: false,
+        show: true,
         drawVerticalLine: false,
-        horizontalInterval: 1,
-        verticalInterval: 1,
+        horizontalInterval: 50,
+        verticalInterval: 5,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: const Color(0xff37434d),
@@ -151,7 +212,12 @@ class _LineChartState extends State<LineChartW> {
       titlesData: FlTitlesData(
         show: true,
         rightTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 42,
+            interval: 25,
+            getTitlesWidget: rightTitleWidgets,
+          ),
         ),
         topTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),
@@ -167,22 +233,26 @@ class _LineChartState extends State<LineChartW> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 1,
+            interval:
+                50, //This is used when iterating over the indexes to get the vertical lables
             getTitlesWidget: leftTitleWidgets,
             reservedSize: 42,
           ),
         ),
       ),
       borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: const Color(0xff37434d), width: 1)),
-      minX: 0,
-      maxX: 11,
+        show: true,
+        border: Border.all(color: const Color(0xff37434d), width: 1),
+      ),
+      minX: 0, //Limits of the chart
+      maxX: 12,
       minY: 0,
-      maxY: 6,
+      maxY: 150,
       lineBarsData: [
         LineChartBarData(
-          spots: temperaturePoints, //The list created from the T input points
+          spots: showT
+              ? temperaturePoints
+              : [], //The list created from the T input points
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -206,7 +276,9 @@ class _LineChartState extends State<LineChartW> {
           ),
         ),
         LineChartBarData(
-          spots: humidityPoints, //The list created from the input H points
+          spots: showH
+              ? humidityPoints
+              : [], //The list created from the input H points
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
