@@ -18,13 +18,12 @@ class _HomePageState extends State<HomePage> {
   int pageIndex = 0;
   final pages = [
     const PageFirst(),
-    PageSecond(),
-    PageThird(),
+    const PageSecond(),
+    const PageThird(),
   ];
 
   void myCustomCallback(int nextPage) {
     setState(() {
-      print('Hola this is Alex');
       pageIndex = nextPage;
     });
   }

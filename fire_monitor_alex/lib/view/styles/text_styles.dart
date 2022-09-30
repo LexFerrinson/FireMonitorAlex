@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class KTextStyle {
+  static const titleTRextStyle =
+      TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w600);
+
   static const headerTextStyle = TextStyle(
       color: AppColors.whiteshade, fontSize: 28, fontWeight: FontWeight.w700);
 

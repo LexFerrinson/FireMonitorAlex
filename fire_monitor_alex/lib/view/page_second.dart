@@ -45,29 +45,35 @@ class _PageSecondState extends State<PageSecond> {
           const SizedBox(
             height: 70,
           ),
-          //This streambuilder is responsible for displaying all the remote nodes in a combo box
-          StreamBuilder<DatabaseEvent>(
-            stream: getNodesStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.data != null &&
-                  snapshot.data!.snapshot.exists) {
-                var vl = Map<String, dynamic>.from(
-                    snapshot.data!.snapshot.value as dynamic);
-                UserNet? userNet = UserNet.fromJson(vl);
-                return NodeCB(
-                  startItem: '',
-                  nodeItems: userNet.nodes.keys.toList(),
-                  selCallback: selectedNodeChange,
-                );
-              } else {
-                return NodeCB(
-                  startItem: '',
-                  nodeItems: [],
-                  selCallback: selectedNodeChange,
-                );
-              }
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Select a RN to display Real Time Data     '),
+              //This streambuilder is responsible for displaying all the remote nodes in a combo box
+              StreamBuilder<DatabaseEvent>(
+                stream: getNodesStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.data != null &&
+                      snapshot.data!.snapshot.exists) {
+                    var vl = Map<String, dynamic>.from(
+                        snapshot.data!.snapshot.value as dynamic);
+                    UserNet? userNet = UserNet.fromJson(vl);
+                    return NodeCB(
+                      startItem: '',
+                      nodeItems: userNet.nodes.keys.toList(),
+                      selCallback: selectedNodeChange,
+                    );
+                  } else {
+                    return NodeCB(
+                      startItem: '',
+                      nodeItems: [],
+                      selCallback: selectedNodeChange,
+                    );
+                  }
+                },
+              ),
+            ],
           ),
 
           //This streambuilder is respoonsible for displaying the sensor data cards

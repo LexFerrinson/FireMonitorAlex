@@ -1,6 +1,8 @@
 import 'package:fire_monitor_alex/view/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'styles/app_colors.dart';
+import 'styles/text_styles.dart';
 import 'widgets/custom_button.dart';
 import 'widgets/custom_formfield.dart';
 import 'widgets/custom_header.dart';
@@ -24,14 +26,28 @@ class _LogInViewState extends State<LogInView> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemStatusBarContrastEnforced: false,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+
+    //Setting SystmeUIMode
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+        overlays: [SystemUiOverlay.top]);
+
     return Scaffold(
       body: SafeArea(
           child: Stack(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: AppColors.blue,
+          Expanded(
+            child: Container(
+              color: AppColors.blue,
+            ),
           ),
           /*CustomHeader(
             text: 'Log In.',
@@ -51,10 +67,17 @@ class _LogInViewState extends State<LogInView> {
                       topLeft: Radius.circular(40),
                       topRight: Radius.circular(40))),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.2,
+                    height: MediaQuery.of(context).size.height * 0.1,
+                  ),
+                  const Text(
+                    'Wildfire Monitor',
+                    style: KTextStyle.titleTRextStyle,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
                   ),
                   CustomFormField(
                     headingText: "Email",

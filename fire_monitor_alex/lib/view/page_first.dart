@@ -315,7 +315,7 @@ class _PageFirstState extends State<PageFirst> {
               onPressed: showDialogRemoteNode,
               tooltip: 'Add RemoteNode',
               heroTag: null,
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.device_hub),
             ),
             const SizedBox(
               height: 10,
@@ -326,7 +326,7 @@ class _PageFirstState extends State<PageFirst> {
               onPressed: showDialogSensor,
               tooltip: 'Add sensor',
               heroTag: null,
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.sensors_outlined),
             ),
           ],
         ),

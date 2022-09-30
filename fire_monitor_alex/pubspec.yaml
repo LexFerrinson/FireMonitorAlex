@@ -40,6 +40,7 @@ dependencies:
   fluttertoast: ^8.0.9
   google_maps_flutter: ^2.1.12
   fl_chart: ^0.55.2
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   flutter_test:
